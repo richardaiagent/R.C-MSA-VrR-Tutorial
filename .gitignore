@@ -1,0 +1,205 @@
+# =============================================================================
+# AI 채팅·협업 솔루션 Git Ignore 설정
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 환경 설정 파일
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
+*.env
+
+# 민감한 설정 파일
+config/secrets.json
+config/private-keys/
+secrets/
+credentials/
+
+# -----------------------------------------------------------------------------
+# Node.js
+# -----------------------------------------------------------------------------
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+# -----------------------------------------------------------------------------
+# React / Web Frontend
+# -----------------------------------------------------------------------------
+# Build outputs
+frontend/web-app/build/
+frontend/web-app/dist/
+frontend/web-app/.cache/
+frontend/web-app/public/hot/
+frontend/web-app/public/storage/
+frontend/web-app/storage/*.key
+
+# Dependency directories
+frontend/web-app/node_modules/
+frontend/web-app/.pnp
+frontend/web-app/.pnp.js
+
+# Production
+frontend/web-app/build
+frontend/web-app/dist
+
+# Environment variables
+frontend/web-app/.env
+frontend/web-app/.env.local
+frontend/web-app/.env.development.local
+frontend/web-app/.env.test.local
+frontend/web-app/.env.production.local
+
+# Storybook
+frontend/web-app/storybook-static/
+
+# -----------------------------------------------------------------------------
+# Electron Desktop App
+# -----------------------------------------------------------------------------
+# Build outputs
+frontend/desktop-app/build/
+frontend/desktop-app/dist/
+frontend/desktop-app/out/
+frontend/desktop-app/release/
+
+# Dependencies
+frontend/desktop-app/node_modules/
+
+# OS generated files
+frontend/desktop-app/.DS_Store
+frontend/desktop-app/Thumbs.db
+
+# Electron packager output directories
+frontend/desktop-app/*-darwin-x64/
+frontend/desktop-app/*-linux-x64/
+frontend/desktop-app/*-win32-x64/
+
+# Auto-updater files
+frontend/desktop-app/updates/
+
+# -----------------------------------------------------------------------------
+# React Native Mobile App
+# -----------------------------------------------------------------------------
+# React Native
+frontend/mobile-app/node_modules/
+frontend/mobile-app/.expo/
+frontend/mobile-app/dist/
+frontend/mobile-app/npm-debug.*
+frontend/mobile-app/*.jks
+frontend/mobile-app/*.p8
+frontend/mobile-app/*.p12
+frontend/mobile-app/*.key
+frontend/mobile-app/*.mobileprovision
+frontend/mobile-app/*.orig.*
+frontend/mobile-app/web-build/
+
+# Metro
+frontend/mobile-app/.metro-health-check*
+
+# Android
+frontend/mobile-app/android/app/build/
+frontend/mobile-app/android/build/
+frontend/mobile-app/android/.gradle/
+frontend/mobile-app/android/local.properties
+frontend/mobile-app/android/app/release/
+frontend/mobile-app/android/key.properties
+frontend/mobile-app/android/keystores/
+
+# iOS
+frontend/mobile-app/ios/build/
+frontend/mobile-app/ios/Pods/
+frontend/mobile-app/ios/*.xcworkspace
+frontend/mobile-app/ios/*.xcuserstate
+frontend/mobile-app/ios/Podfile.lock
+
+# Xcode
+frontend/mobile-app/ios/DerivedData/
+frontend/mobile-app/ios/build/
+frontend/mobile-app/ios/*.pbxuser
+frontend/mobile-app/ios/*.mode1v3
+frontend/mobile-app/ios/*.mode2v3
+frontend/mobile-app/ios/*.perspectivev3
+frontend/mobile-app/ios/xcuserdata/
+
+# React Native Debugger
+frontend/mobile-app/.vscode/
+
+# -----------------------------------------------------------------------------
+# Java / Maven Backend
+# -----------------------------------------------------------------------------
+# Compiled class files
+backend/**/*.class
+
+# Package Files
+backend/**/*.jar
+backend/**/*.war
+backend/**/*.ear
+
+# Maven
+backend/**/target/
+backend/**/.mvn/timing.properties
+backend/**/.mvn/wrapper/maven-wrapper.jar
+
+# Maven Wrapper
