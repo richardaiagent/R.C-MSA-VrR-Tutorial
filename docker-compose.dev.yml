@@ -1,0 +1,482 @@
+version: '3.8'
+
+services:
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: ai-chat-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infrastructure/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./infrastructure/docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./infrastructure/docker/nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - gateway-service
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+
+  # API Gateway Service
+  gateway-service:
+    build:
+      context: ./backend/gateway-service
+      dockerfile: Dockerfile
+    container_name: ai-chat-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - SERVER_PORT=8080
+      - EUREKA_CLIENT_ENABLED=false
+      - USER_SERVICE_URL=http://user-service:8081
+      - CHAT_SERVICE_URL=http://chat-service:8082
+      - TASK_SERVICE_URL=http://task-service:8083
+      - AI_SERVICE_URL=http://ollama-ai-service:8084
+      - NOTIFICATION_SERVICE_URL=http://notification-service:8085
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    depends_on:
+      - redis
+      - user-service
+      - chat-service
+      - task-service
+      - ollama-ai-service
+      - notification-service
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # User Service
+  user-service:
+    build:
+      context: ./backend/user-service
+      dockerfile: Dockerfile
+    container_name: ai-chat-user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - SERVER_PORT=8081
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USERNAME=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Chat Service
+  chat-service:
+    build:
+      context: ./backend/chat-service
+      dockerfile: Dockerfile
+    container_name: ai-chat-chat-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - SERVER_PORT=8082
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USERNAME=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - AI_SERVICE_URL=http://ollama-ai-service:8084
+      - FILE_STORAGE_PATH=/app/uploads
+      - MAX_FILE_SIZE=10MB
+    volumes:
+      - chat-uploads:/app/uploads
+    depends_on:
+      - mysql
+      - redis
+      - ollama-ai-service
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Task Service
+  task-service:
+    build:
+      context: ./backend/task-service
+      dockerfile: Dockerfile
+    container_name: ai-chat-task-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - SERVER_PORT=8083
+      - DB_HOST=oracle
+      - DB_PORT=1521
+      - DB_SID=${ORACLE_SID}
+      - DB_USERNAME=${ORACLE_USER}
+      - DB_PASSWORD=${ORACLE_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - AI_SERVICE_URL=http://ollama-ai-service:8084
+    depends_on:
+      - oracle
+      - redis
+      - ollama-ai-service
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Ollama AI Service
+  ollama-ai-service:
+    build:
+      context: ./backend/ollama-ai-service
+      dockerfile: Dockerfile
+    container_name: ai-chat-ollama-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - SERVER_PORT=8084
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - VECTOR_DB_HOST=qdrant
+      - VECTOR_DB_PORT=6333
+      - DEFAULT_MODEL=llama2
+      - MAX_TOKENS=2000
+      - TEMPERATURE=0.7
+    depends_on:
+      - ollama
+      - redis
+      - qdrant
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8084/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Notification Service
+  notification-service:
+    build:
+      context: ./backend/notification-service
+      dockerfile: Dockerfile
+    container_name: ai-chat-notification-service
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - SERVER_PORT=8085
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USERNAME=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - FCM_SERVER_KEY=${FCM_SERVER_KEY}
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: ai-chat-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./infrastructure/docker/mysql/init:/docker-entrypoint-initdb.d:ro
+      - ./infrastructure/docker/mysql/conf.d:/etc/mysql/conf.d:ro
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Oracle Database (Optional)
+  oracle:
+    image: container-registry.oracle.com/database/express:21.3.0-xe
+    container_name: ai-chat-oracle
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    environment:
+      - ORACLE_PWD=${ORACLE_PASSWORD}
+      - ORACLE_CHARACTERSET=AL32UTF8
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./infrastructure/docker/oracle/init:/opt/oracle/scripts/startup:ro
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "sqlplus", "-L", "sys/${ORACLE_PASSWORD}@localhost:1521/XE", "as", "sysdba", "@/dev/null"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ai-chat-redis
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+      - ./infrastructure/docker/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Ollama AI Runtime
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ai-chat-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+      - ./ai-models/ollama/models:/models:ro
+    environment:
+      - OLLAMA_MODELS=/root/.ollama
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: ai-chat-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+      - ./infrastructure/docker/qdrant/config:/qdrant/config:ro
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ai-chat-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/docker/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infrastructure/docker/monitoring/rules:/etc/prometheus/rules:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ai-chat-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infrastructure/docker/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infrastructure/docker/monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+
+  # Jaeger Tracing
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: ai-chat-jaeger
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+    volumes:
+      - jaeger-data:/tmp
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+
+  # React Web Application
+  web-app:
+    build:
+      context: ./frontend/web-app
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=http://localhost:8080/api/v1
+        - REACT_APP_WS_URL=ws://localhost:8082/ws
+        - REACT_APP_VERSION=${APP_VERSION}
+    container_name: ai-chat-web-app
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # File Storage Service (MinIO)
+  minio:
+    image: minio/minio:latest
+    container_name: ai-chat-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-data:/data
+    networks:
+      - ai-chat-network
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# Networks
+networks:
+  ai-chat-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Volumes
+volumes:
+  mysql-data:
+    driver: local
+  oracle-data:
+    driver: local
+  redis-data:
+    driver: local
+  ollama-models:
+    driver: local
+  qdrant-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  jaeger-data:
+    driver: local
+  minio-data:
+    driver: local
+  chat-uploads:
+    driver: local
+
+
+    # Volumes 과연 이게 끝일까?
