@@ -1,74 +1,112 @@
-# R.C-MSA-VrR-Tutorial
-MSA (Microservices Architecture) with VrR Tutorial Repository
+# 🤖 AI Chat & Collaboration Solution Project Plan (Enhanced Version)
 
-# 🏗️ R.C-MSA-VrR-Tutorial
+**Vert.x MSA + React + React Native + AI Integrated Platform**
 
-[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+## ⚠️ Important Notice
 
-MSA (Microservices Architecture) with VrR (Virtual Reality & Reality) Tutorial Repository
+**This project strictly prohibits commercial use, redistribution, and reuse.**
 
-## 📖 소개
-이 저장소는 마이크로서비스 아키텍처와 VR/AR 기술을 결합한 튜토리얼을 제공합니다.
+* 🚫 **Commercial Use Prohibited**: Cannot be used for any form of commercial purposes
+* 🚫 **Redistribution Prohibited**: Cannot be distributed or shared with third parties
+* 🚫 **Reuse Prohibited**: Code or design cannot be utilized in other projects
+* ✅ **Usage Conditions**: Can only be used after obtaining prior approval from the creator (richardaiagent) and paying legitimate fees
 
-2015년부터 축적된 실무 경험과 노하우를 바탕으로 제작되었습니다.
+**Contact**: richardaiagent@github.com
 
-## 🎯 주요 특징
-- 실무 중심의 MSA 아키텍처 설계
-- VR/AR 기술과의 통합 방법론
-- 단계별 학습 가이드
-- 실제 프로젝트 예제
+## 📄 License
 
-## 🤝 기여 방법 (Contributing)
+This project is distributed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License**.
 
-### 브랜치 안내
-- **main**: 메인 브랜치 (소유자 전용)
-- **community**: 커뮤니티 기여 브랜치 (누구나 참여 가능)
+**R.C-MSA-VrR-Tutorial © 2015 by richardaiagent**
 
-### 저장소 클론 및 기여
-\`\`\`bash
-# 1. 저장소 클론
-git clone https://github.com/richardaiagent/R.C-MSA-VrR-Tutorial.git
-cd R.C-MSA-VrR-Tutorial
+* Source: https://github.com/richardaiagent/R.C-MSA-VrR-Tutorial
+* License: https://creativecommons.org/licenses/by-nc-sa/4.0/
 
-# 2. community 브랜치로 전환 (기본값)
-git checkout community
+**Permissions:**
+* ✅ Share — Copy and redistribute in any medium or format
+* ✅ Adapt — Remix, transform, and build upon the material
 
-# 3. 작업 후 커밋
-git add .
-git commit -m "기여 내용 설명"
+**Conditions:**
+* 🔗 **Attribution** — Must provide appropriate credit and include license link
+* 🚫 **Non-Commercial** — Cannot be used for commercial purposes
+* 📋 **ShareAlike** — Derivative works must be distributed under the same license
 
-# 4. Fork 후 PR 생성
-\`\`\`
+## 📋 Project Overview
 
-### Pull Request 절차
-1. 저장소 **Fork**
-2. \`community\` 브랜치에서 작업
-3. Pull Request 생성: \`your-fork/community\` → \`original/community\`
-4. 리뷰 후 병합
+### 🎯 Objectives
 
-## 📚 목차
-- [시작하기](docs/getting-started.md)
-- [MSA 아키텍처 개요](docs/msa-architecture.md)
-- [VrR 기술 통합](docs/vrr-integration.md)
-- [실습 예제](examples/)
-- [API 문서](docs/api-reference.md)
+* Development and service launch of next-generation AI-based chat & collaboration solution on-premises
+* Windows 11 + Docker Desktop + VS Code environment
+* Vert.x-based MSA + React Web + React Native Mobile
+* Building in-house AI models with Ollama for unlimited token usage
+* **Primary Goal**: Support simple HR tasks and unit screen development coding tasks
+* Real-time collaboration and personalized AI assistant services
 
-## 🛠️ 기술 스택
-- **Microservices**: Docker, Kubernetes, Spring Boot, Node.js
-- **VR/AR**: Unity, Unreal Engine, WebXR
-- **Database**: MongoDB, Redis, PostgreSQL
-- **Message Queue**: RabbitMQ, Apache Kafka
-- **Monitoring**: Prometheus, Grafana, ELK Stack
+### 🎯 Phase 1 MVP Goals (Detailed)
 
-## 🚀 빠른 시작
-```bash
-# 저장소 클론
-git clone https://github.com/richardaiagent/R.C-MSA-VrR-Tutorial.git
+**HR Task AI Support**
+* Employee information inquiry and management
+* Automatic creation of leave/business trip applications
+* Work schedule optimization suggestions
+* Meeting room reservation and scheduling
 
-# 의존성 설치
-npm install  # or yarn install
+**Development Coding Task Support**
+* React/React Native component code generation
+* Automatic unit screen template generation
+* Code review and optimization suggestions
+* API integration code snippet provision
 
-# 개발 서버 실행
-npm run dev
+## 🏗️ Technology Stack
 
-..
+| Category | Technology | Version | Purpose |
+|----------|------------|---------|---------|
+| Backend | Java + Eclipse Vert.x | 11 + 4.x | MSA Backend |
+| Web Frontend | React + TypeScript | 18 + 5.x | Web Client |
+| PC Desktop | Electron + React | Latest + 18 | Windows/Mac/Linux |
+| Mobile | React Native + TypeScript | 0.72+ | iOS/Android App |
+| Database | MySQL + Oracle + Redis | 8.0 + 12c + 7.x | Multi-DB Support |
+| AI Integration | Ollama + Custom Models | Llama2/CodeLlama/Mistral | On-Premises AI |
+| Vector DB | Redis Vector Search | 7.2+ | Embedding Storage |
+| Container | Docker + Docker Compose | Latest | Containerization |
+| Proxy | Nginx | Latest | Reverse Proxy |
+| Monitoring | Prometheus + Grafana | Latest | Monitoring |
+
+## 🤖 AI Model Detailed Specifications
+
+### Ollama AI Service Configuration
+
+| Model Name | Size | Memory Usage | Main Purpose | Performance Target |
+|------------|------|--------------|--------------|-------------------|
+| Llama2-7B-Chat | 7B | ~4GB RAM | General conversation, HR task Q&A | Response time < 3s |
+| CodeLlama-7B | 7B | ~4GB RAM | Code generation, review, debugging | Code generation < 5s |
+| Mistral-7B-Instruct | 7B | ~4GB RAM | Business document writing, summarization | Text generation < 4s |
+
+### AI Service Detailed Features
+
+**HR Task AI Support:**
+* Natural language-based employee information search
+* Automatic completion of leave application templates
+* Meeting schedule conflict detection and alternative suggestions
+* Work priority analysis and recommendations
+
+**Development Coding AI Support:**
+* React/TypeScript component scaffolding
+* Automatic REST API client code generation
+* Screen layout CSS/Tailwind suggestions
+* Code quality analysis and improvement suggestions
+
+### Redis Vector Search Utilization
+
+```yaml
+Vector DB Configuration:
+  - Model: sentence-transformers/all-MiniLM-L6-v2
+  - Dimensions: 384
+  - Similarity: Cosine Similarity
+  - Index: HNSW (Hierarchical Navigable Small World)
+  
+Stored Data:
+  - Company policy document embeddings
+  - Code snippet library
+  - FAQ and work manuals
+  - Development guidelines
+```
