@@ -12,31 +12,10 @@
 * ✅ **Usage Conditions**: Can only be used after obtaining prior approval from the creator (richardaiagent) and paying legitimate fees
 
 **Contact**: richardaiagent@github.com
+ 
+# 🤖 AI Chat & Collaboration Solution Project Plan
 
-## 📄 License
-
-**Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License**
-
-**R.C-MSA-VrR-Tutorial © 2015 by richardaiagent** is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
-
-**Attribution Information:**
-* Title of work: R.C-MSA-VrR-Tutorial
-* Creator: richardaiagent
-* Source: https://github.com/richardaiagent/R.C-MSA-VrR-Tutorial
-* License: https://creativecommons.org/licenses/by-nc-sa/4.0/
-
-**You are free to:**
-* Share — copy and redistribute the material in any medium or format
-* Adapt — remix, transform, and build upon the material
-
-**Under the following terms:**
-* **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-* **NonCommercial** — You may not use the material for commercial purposes
-* **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original
-
-**No additional restrictions** — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
-
-**Full Legal Text**: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+**Vert.x MSA + React + React Native + AI Integrated Platform**
 
 ## 📋 Project Overview
 
@@ -46,22 +25,8 @@
 * Windows 11 + Docker Desktop + VS Code environment
 * Vert.x-based MSA + React Web + React Native Mobile
 * Building in-house AI models with Ollama for unlimited token usage
-* **Primary Goal**: Support simple HR tasks and unit screen development coding tasks
+* Implementation of intelligent assistant that accumulates development/business know-how
 * Real-time collaboration and personalized AI assistant services
-
-### 🎯 Phase 1 MVP Goals (Detailed)
-
-**HR Task AI Support**
-* Employee information inquiry and management
-* Automatic creation of leave/business trip applications
-* Work schedule optimization suggestions
-* Meeting room reservation and scheduling
-
-**Development Coding Task Support**
-* React/React Native component code generation
-* Automatic unit screen template generation
-* Code review and optimization suggestions
-* API integration code snippet provision
 
 ## 🏗️ Technology Stack
 
@@ -73,47 +38,195 @@
 | Mobile | React Native + TypeScript | 0.72+ | iOS/Android App |
 | Database | MySQL + Oracle + Redis | 8.0 + 12c + 7.x | Multi-DB Support |
 | AI Integration | Ollama + Custom Models | Llama2/CodeLlama/Mistral | On-Premises AI |
-| Vector DB | Redis Vector Search | 7.2+ | Embedding Storage |
 | Container | Docker + Docker Compose | Latest | Containerization |
 | Proxy | Nginx | Latest | Reverse Proxy |
 | Monitoring | Prometheus + Grafana | Latest | Monitoring |
 
-## 🤖 AI Model Detailed Specifications
+## 🚀 Service Architecture
 
-### Ollama AI Service Configuration
+### Overall System Configuration
 
-| Model Name | Size | Memory Usage | Main Purpose | Performance Target |
-|------------|------|--------------|--------------|-------------------|
-| Llama2-7B-Chat | 7B | ~4GB RAM | General conversation, HR task Q&A | Response time < 3s |
-| CodeLlama-7B | 7B | ~4GB RAM | Code generation, review, debugging | Code generation < 5s |
-| Mistral-7B-Instruct | 7B | ~4GB RAM | Business document writing, summarization | Text generation < 4s |
-
-### AI Service Detailed Features
-
-**HR Task AI Support:**
-* Natural language-based employee information search
-* Automatic completion of leave application templates
-* Meeting schedule conflict detection and alternative suggestions
-* Work priority analysis and recommendations
-
-**Development Coding AI Support:**
-* React/TypeScript component scaffolding
-* Automatic REST API client code generation
-* Screen layout CSS/Tailwind suggestions
-* Code quality analysis and improvement suggestions
-
-### Redis Vector Search Utilization
-
-```yaml
-Vector DB Configuration:
-  - Model: sentence-transformers/all-MiniLM-L6-v2
-  - Dimensions: 384
-  - Similarity: Cosine Similarity
-  - Index: HNSW (Hierarchical Navigable Small World)
-  
-Stored Data:
-  - Company policy document embeddings
-  - Code snippet library
-  - FAQ and work manuals
-  - Development guidelines
 ```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            Frontend Layer                                  │
+├─────────────┬─────────────┬─────────────────────────────────────────────────┤
+│ React Web   │  Electron   │           React Native App                     │
+│    App      │  Desktop    │         (iOS + Android)                       │
+│(Port: 3000) │    App      │                                               │
+└─────────────┴─────────────┴─────────────────────────────────────────────────┘
+                                        │
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       Nginx Reverse Proxy                                  │
+│                        (Port: 80/443)                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       API Gateway Service                                  │
+│                        (Port: 8080)                                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                        │
+┌───────────┬───────────┬───────────┬───────────┬─────────────────────────────┐
+│   User    │   Chat    │   Task    │ Ollama    │      Notification           │
+│ Service   │ Service   │ Service   │AI Service │       Service               │
+│(Port:8081)│(Port:8082)│(Port:8083)│(Port:8084)│     (Port:8085)             │
+└───────────┴───────────┴───────────┴───────────┴─────────────────────────────┘
+                                        │
+┌─────────────┬─────────────┬─────────────┬─────────────────────────────────────┐
+│   User DB   │   Chat DB   │   Task DB   │    Redis Cache + Vector DB          │
+│MySQL/Oracle │MySQL/Oracle │MySQL/Oracle │  (Sessions/RT/Embeddings)           │
+└─────────────┴─────────────┴─────────────┴─────────────────────────────────────┘
+```
+
+### MSA Service Detailed Configuration
+
+| Service Name | Port | Main Functions | AI Integration |
+|--------------|------|----------------|----------------|
+| Gateway Service | 8080 | Routing, Authentication, CORS | ❌ |
+| User Service | 8081 | User Management, JWT Authentication | ❌ |
+| Chat Service | 8082 | Real-time Chat, WebSocket | ✅ In-house AI Chatbot |
+| Task Service | 8083 | Task Management, Workflow | ✅ Intelligent Classification |
+| Ollama AI Service | 8084 | On-premises AI Model Management | ✅ Core AI Engine |
+| Notification Service | 8085 | Push Notifications, Email | ✅ Smart Notifications |
+
+## 📁 Project Folder Structure
+
+### Main Project Structure
+
+```
+ai-chat-collaboration-platform/
+├── 📄 README.md                           # Project Main Guide
+├── 📄 ARCHITECTURE.md                     # Architecture Detailed Description
+├── 📄 API_DOCUMENTATION.md                # API Specification
+├── 🐳 docker-compose.yml                  # Production Container
+├── 🐳 docker-compose.dev.yml              # Development Container
+├── 🔧 .env.example                        # Environment Variable Template
+├── 📋 package.json                        # Root Package Management
+├── 🚫 .gitignore                          # Git Exclude Files
+│
+├── 📚 docs/                               # Project Documentation
+│   ├── api/                               # API Documentation
+│   ├── deployment/                        # Deployment Guide
+│   ├── development/                       # Development Guide
+│   └── user-guide/                        # User Manual
+│
+├── 🎯 backend/                            # Vert.x MSA Backend
+│   ├── gateway-service/                   # API Gateway
+│   ├── user-service/                      # User Management Service
+│   ├── chat-service/                      # Chat Service
+│   ├── task-service/                      # Task Management Service
+│   ├── ollama-ai-service/                 # AI Integration Service
+│   ├── notification-service/              # Notification Service
+│   ├── shared/                            # Common Library
+│   │   ├── common/                        # Common Utilities
+│   │   ├── security/                      # Security Common Module
+│   │   └── database/                      # DB Common Configuration
+│   └── docker/                            # Docker Configuration
+│
+├── 🌐 frontend/                           # Frontend Applications
+│   ├── web-app/                           # React Web App
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   ├── pages/
+│   │   │   ├── hooks/
+│   │   │   ├── services/
+│   │   │   ├── types/
+│   │   │   └── utils/
+│   │   ├── public/
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   ├── desktop-app/                       # Electron Desktop App
+│   │   ├── src/
+│   │   │   ├── main/                      # Main Process
+│   │   │   ├── renderer/                  # Renderer Process
+│   │   │   └── shared/                    # Common Code
+│   │   ├── assets/
+│   │   ├── build/
+│   │   └── package.json
+│   │
+│   └── mobile-app/                        # React Native Mobile App
+│       ├── src/
+│       │   ├── components/
+│       │   ├── screens/
+│       │   ├── navigation/
+│       │   ├── services/
+│       │   ├── hooks/
+│       │   └── types/
+│       ├── android/
+│       ├── ios/
+│       ├── metro.config.js
+│       └── package.json
+│
+├── 🤖 ai-models/                          # AI Model Management
+│   ├── ollama/                            # Ollama Configuration
+│   │   ├── models/                        # Model Files
+│   │   ├── configs/                       # Model Configuration
+│   │   └── scripts/                       # Management Scripts
+│   ├── embeddings/                        # Vector Embeddings
+│   └── knowledge-base/                    # Knowledge Base
+│
+├── 🏗️ infrastructure/                     # Infrastructure Configuration
+│   ├── docker/                            # Docker Configuration
+│   │   ├── nginx/                         # Nginx Configuration
+│   │   ├── mysql/                         # MySQL Configuration
+│   │   ├── redis/                         # Redis Configuration
+│   │   └── monitoring/                    # Monitoring Configuration
+│   ├── k8s/                               # Kubernetes Manifests
+│   └── terraform/                         # Infrastructure as Code
+│
+├── 🧪 tests/                              # Test Code
+│   ├── unit/                              # Unit Tests
+│   ├── integration/                       # Integration Tests
+│   ├── e2e/                               # E2E Tests
+│   └── performance/                       # Performance Tests
+│
+└── 🚀 scripts/                            # Automation Scripts
+    ├── build/                             # Build Scripts
+    ├── deploy/                            # Deployment Scripts
+    ├── dev/                               # Development Environment Scripts
+    └── maintenance/                       # Maintenance Scripts
+```
+
+## 🎨 Core Feature Specifications
+
+### 1. Real-time Chat System
+
+* WebSocket-based real-time bidirectional communication
+* Multimedia message support (text, images, files, voice)
+* AI chatbot integration for business support and Q&A
+* Message encryption and security features
+* Conversation history search and bookmarks
+
+### 2. Intelligent Task Management
+
+* AI-based task classification and automatic priority setting
+* Smart schedule management and meeting scheduling
+* Task progress tracking and reporting
+* Team collaboration workflow management
+* Automatic reminders and notification system
+
+### 3. On-premises AI Engine
+
+* Ollama-based local AI model serving
+* Cost savings with unlimited token usage
+* Custom model fine-tuning support
+* Knowledge base construction and RAG system
+* Multi-language support (Korean, English, Japanese)
+
+### 4. User Management System
+
+* JWT-based authentication and authorization management
+* Role-based access control (RBAC)
+* SSO integration support
+* User profile and settings management
+* Activity logs and audit trails
+
+## 🔧 Development Environment Setup
+
+### Essential Requirements
+
+* **OS**: Windows 11 Pro (Recommended)
+* **RAM**: 16GB or higher (for AI model loading)
+* **Storage**: SSD 500GB or higher
+* **Docker Desktop**: Latest version
+* **VS Code**: Latest version + extension pack
