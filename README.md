@@ -93,7 +93,7 @@ This project is distributed under the **Creative Commons Attribution-NonCommerci
 * React/TypeScript component scaffolding
 * Automatic REST API client code generation
 * Screen layout CSS/Tailwind suggestions
-* Code quality analysis and improvement suggestions
+* Code quality analysis and improvement suggestions.
 
 ### Redis Vector Search Utilization
 
